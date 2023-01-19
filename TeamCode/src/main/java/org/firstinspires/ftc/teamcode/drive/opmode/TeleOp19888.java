@@ -146,10 +146,10 @@ public class TeleOp19888 extends LinearOpMode {
 
 
             //Encoder Updates
-            telemetry.addData("drive.lift Encoder: ", drive.lift.getCurrentPosition());
-            telemetry.addData("Left Dist: ", drive.leftDistance.getDistance(DistanceUnit.CM));
-            telemetry.addData("Right Dist: ", drive.rightDistance.getDistance(DistanceUnit.CM));
-            telemetry.update();
+//            telemetry.addData("drive.lift Encoder: ", drive.lift.getCurrentPosition());
+//            telemetry.addData("Left Dist: ", drive.leftDistance.getDistance(DistanceUnit.CM));
+//            telemetry.addData("Right Dist: ", drive.rightDistance.getDistance(DistanceUnit.CM));
+//            telemetry.update();
 
 
         }

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -11,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.Robot19888;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
  */
 @Config
 @Autonomous(group = "drive")
-public class RIGHTAutoSpline extends LinearOpMode {
+public class A3ParkLeft extends LinearOpMode {
     public static double DISTANCE = 60; // in
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -42,6 +42,10 @@ public class RIGHTAutoSpline extends LinearOpMode {
 
     // UNITS ARE METERS
     double tagsize = 0.166;
+
+    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
+
+    AprilTagDetection tagOfInterest = null;
 
     int det = 0;
 
@@ -68,6 +72,19 @@ public class RIGHTAutoSpline extends LinearOpMode {
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
+
+
+        // Lens intrinsics
+        // UNITS ARE PIXELS
+        // NOTE: this calibration is for the C920 webcam at 800x448.
+        // You will need to do your own calibration for other configurations!
+        double fx = 578.272;
+        double fy = 578.272;
+        double cx = 402.145;
+        double cy = 221.506;
+
+        // UNITS ARE METERS
+        double tagsize = 0.166;
 
         telemetry.setMsTransmissionInterval(50);
 
@@ -122,124 +139,67 @@ public class RIGHTAutoSpline extends LinearOpMode {
             sleep(20);
         }
 
-
         Robot19888 drive = new Robot19888(hardwareMap);
 
 
         if(!isStopRequested() && opModeIsActive()) {
-            Pose2d startPose = new Pose2d(-31, -65, Math.toRadians(90));
-            Pose2d placeReady = new Pose2d(-32, -5, Math.toRadians(45));
-            Pose2d pickupPos = new Pose2d(-64,-12,Math.toRadians(180));
-
+            Pose2d startPose = new Pose2d(72, -36, Math.toRadians(180));
             drive.setPoseEstimate(startPose);
 
-
-            TrajectorySequence gotos = drive.trajectorySequenceBuilder(startPose)
-                    .setTangent(Math.toRadians(120))
-                    .splineToLinearHeading(placeReady, Math.toRadians(90))
+            Trajectory traj1 = drive.trajectoryBuilder(startPose)
+                    .forward(6)
+                    .build();
+            Trajectory park1 = drive.trajectoryBuilder(traj1.end())
+                    .strafeLeft(28)
+                    .build();
+            Trajectory park12 = drive.trajectoryBuilder(park1.end())
+                    .forward(24)
                     .build();
 
-            TrajectorySequence pickup = drive.trajectorySequenceBuilder(placeReady)
-                    .setTangent(Math.toRadians(270))
-                    .splineToLinearHeading(pickupPos,Math.toRadians(180))
+            Trajectory park2 = drive.trajectoryBuilder(traj1.end())
+                    .forward(24)
                     .build();
 
-            TrajectorySequence backto = drive.trajectorySequenceBuilder(pickupPos)
-                    .setTangent(Math.toRadians(0))
-                    .splineToLinearHeading(placeReady,Math.toRadians(60))
+            Trajectory park3 = drive.trajectoryBuilder(traj1.end())
+                    .strafeRight(14)
                     .build();
-
-
-            //Below is the Trajectory initialization for the drive code.
-
-
-
-
-
-
+            Trajectory park32 = drive.trajectoryBuilder(park3.end())
+                    .forward(24)
+                    .build();
 
 
             //put after traj 4
-            int conestack = 5;
             drive.claw(true);
-            drive.liftOp(200);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(gotos);
-            drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
-            conestack--;
-            drive.followTrajectorySequence(pickup);
-            drive.claw(true);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(backto);
-
-            drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
-            conestack--;
-            drive.followTrajectorySequence(pickup);
-            drive.claw(true);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(backto);
-
-            drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
-            conestack--;
-            drive.followTrajectorySequence(pickup);
-            drive.claw(true);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(backto);
-
-            drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
-            conestack--;
-            drive.followTrajectorySequence(pickup);
-            drive.claw(true);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(backto);
-
-            drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
-            conestack--;
-            drive.followTrajectorySequence(pickup);
-            drive.claw(true);
-            drive.liftOp(3000);
-            drive.followTrajectorySequence(backto);
+            drive.liftOp(50);
+            drive.followTrajectory(traj1);
 
 
 
-
-
-            //drive.followTrajectory(fromPole);
-
-
+            //put auto end splines here
             if (det==0){
                 telemetry.addData("Gonna go to 1 bc I didn't see",det);
-
             }
             else if (det==1){
                 telemetry.addData("One",det);
+                drive.followTrajectory(park1);
+                drive.followTrajectory(park12);
 
             }else if (det==2){
                 telemetry.addData("Two",det);
+                drive.followTrajectory(park2);
 
             }else if (det==3){
                 telemetry.addData("Three",det);
+                drive.followTrajectory(park3);
+                drive.followTrajectory(park32);
 
             }
-            //drive.liftOp(2000);
 
             telemetry.addData("Lift Enc: ",drive.lift.getCurrentPosition());
-
-
-
-
-
             telemetry.update();
 
 
         }
-
-
     }}
 
 

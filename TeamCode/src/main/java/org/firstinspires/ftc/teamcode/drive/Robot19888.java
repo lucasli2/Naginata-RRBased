@@ -357,12 +357,12 @@ public class Robot19888 extends MecanumDrive {
     //This is the code for the claw
     public void claw(boolean grab){
         if (grab){
-            leftClaw.setPosition(0.6);
+            leftClaw.setPosition(0);
             rightClaw.setPosition(0.4);
         }
         else if (!grab){
 
-            leftClaw.setPosition(0.4);
+            leftClaw.setPosition(0.45);
             rightClaw.setPosition(0.6);
         }
     }

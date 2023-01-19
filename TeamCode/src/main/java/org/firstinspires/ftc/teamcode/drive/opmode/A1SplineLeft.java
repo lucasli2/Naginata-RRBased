@@ -4,8 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -14,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
 import org.firstinspires.ftc.teamcode.drive.Robot19888;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
  */
 @Config
 @Autonomous(group = "drive")
-public class AutoSplineWithAPTAG extends LinearOpMode {
+public class A1SplineLeft extends LinearOpMode {
     public static double DISTANCE = 60; // in
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -130,26 +128,26 @@ public class AutoSplineWithAPTAG extends LinearOpMode {
 
 
         if(!isStopRequested() && opModeIsActive()) {
-            Pose2d startPose = new Pose2d(-31, -65, Math.toRadians(90));
-            Pose2d placeReady = new Pose2d(-32, -5, Math.toRadians(45));
-            Pose2d pickupPos = new Pose2d(-64,-12,Math.toRadians(180));
+            Pose2d startPose = new Pose2d(-26, -65, Math.toRadians(90));
+            Pose2d placeReady = new Pose2d(-24, -9, Math.toRadians(90));
+            Pose2d pickupPos = new Pose2d(-54,-10,Math.toRadians(180));
 
             drive.setPoseEstimate(startPose);
 
 
             TrajectorySequence gotos = drive.trajectorySequenceBuilder(startPose)
-                    .setTangent(Math.toRadians(120))
-                    .splineToLinearHeading(placeReady, Math.toRadians(90))
+                    .setTangent(Math.toRadians(20))
+                    .splineToConstantHeading(new Vector2d(-24,-9), Math.toRadians(150))
                     .build();
 
             TrajectorySequence pickup = drive.trajectorySequenceBuilder(placeReady)
-                    .setTangent(Math.toRadians(270))
+                    .setTangent(Math.toRadians(200))
                     .splineToLinearHeading(pickupPos,Math.toRadians(180))
                     .build();
 
             TrajectorySequence backto = drive.trajectorySequenceBuilder(pickupPos)
                     .setTangent(Math.toRadians(0))
-                    .splineToLinearHeading(placeReady,Math.toRadians(60))
+                    .splineToLinearHeading(placeReady,Math.toRadians(0))
                     .build();
 
 
@@ -169,7 +167,7 @@ public class AutoSplineWithAPTAG extends LinearOpMode {
             drive.liftOp(3000);
             drive.followTrajectorySequence(gotos);
             drive.claw(false);
-            drive.liftOp(450-((5-conestack)*70));
+            drive.liftOp(450);
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
