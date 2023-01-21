@@ -21,7 +21,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_VEL;
@@ -76,8 +75,7 @@ public class Robot19888 extends MecanumDrive {
 
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotor lift;
-    public Servo leftClaw, rightClaw;
-    public DistanceSensor leftDistance,rightDistance;
+    public Servo clawee;
 
 
 
@@ -108,11 +106,11 @@ public class Robot19888 extends MecanumDrive {
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
 
-        //Distance Sensor Declaration
-        leftDistance = hardwareMap.get(DistanceSensor .class, "leftDistance");
-        rightDistance = hardwareMap.get(DistanceSensor . class,"rightDistance");
-        double ldr = leftDistance.getDistance(DistanceUnit.INCH);
-        double rdr = rightDistance.getDistance(DistanceUnit.INCH);
+//        //Distance Sensor Declaration
+//        leftDistance = hardwareMap.get(DistanceSensor .class, "leftDistance");
+//        rightDistance = hardwareMap.get(DistanceSensor . class,"rightDistance");
+//        double ldr = leftDistance.getDistance(DistanceUnit.INCH);
+//        double rdr = rightDistance.getDistance(DistanceUnit.INCH);
 
         // TODO: If the hub containing the IMU you are using is mounted so that the "REV" logo does
         // not face up, remap the IMU axes so that the z-axis points upward (normal to the floor.)
@@ -143,8 +141,7 @@ public class Robot19888 extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        leftClaw = hardwareMap.servo.get("leftClaw");
-        rightClaw = hardwareMap.servo.get("rightClaw");
+        clawee = hardwareMap.servo.get("leftClaw");
         lift = hardwareMap.get(DcMotor.class, "frontLift");
 
 
@@ -357,13 +354,11 @@ public class Robot19888 extends MecanumDrive {
     //This is the code for the claw
     public void claw(boolean grab){
         if (grab){
-            leftClaw.setPosition(0);
-            rightClaw.setPosition(0.4);
+            clawee.setPosition(0.45);
         }
         else if (!grab){
 
-            leftClaw.setPosition(0.45);
-            rightClaw.setPosition(0.6);
+            clawee.setPosition(0);
         }
     }
 

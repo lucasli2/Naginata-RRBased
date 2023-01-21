@@ -26,7 +26,36 @@ import java.util.ArrayList;
 @Config
 @Autonomous(group = "drive")
 public class A1SplineLeft extends LinearOpMode {
+    public static double startx = -26;
+    public static double starty = -65;
+    public static Pose2d startPose = new Pose2d(startx, starty, Math.toRadians(90));
+    public static Pose2d placeReady = new Pose2d(-24, -9, Math.toRadians(90));
+    public static Vector2d placeReadyV = new Vector2d(-24,-9);
+    public static double pickx = -54;
+    public static double picky = -10;
+
+    public static Pose2d pickupPos = new Pose2d(pickx,picky,Math.toRadians(180));
+    public static double gotosTan1 = 20;
+    public static double gotosTan2 = 160;
+    public static double pickupTan1 = 200;
+    public static double pickupTan2 = 180;
+    public static double backtoTan1 = 0;
+    public static double backtoTan2 = 0;
     public static double DISTANCE = 60; // in
+    public static int fullUp = 3200;
+    public static int pickupOne = 550;
+    public static int pickupTwo = 350;
+    public static int pickupThree = 150;
+    public static int pickupFour = 50;
+    public static int pickupFive = 0;//recalib
+
+    public static Pose2d parkOne = new Pose2d(-26, -65, Math.toRadians(90));
+    public static Pose2d parkTwo = new Pose2d(-26, -65, Math.toRadians(90));
+    public static Pose2d parkThr = new Pose2d(-26, -65, Math.toRadians(90));
+    
+
+
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -78,9 +107,13 @@ public class A1SplineLeft extends LinearOpMode {
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+
+
+        Robot19888 drive = new Robot19888(hardwareMap);
+
         while (!isStarted() && !isStopRequested()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
+            drive.claw(true);
             if (currentDetections.size() != 0) {
                 boolean tagFound = false;
 
@@ -124,30 +157,25 @@ public class A1SplineLeft extends LinearOpMode {
         }
 
 
-        Robot19888 drive = new Robot19888(hardwareMap);
-
 
         if(!isStopRequested() && opModeIsActive()) {
-            Pose2d startPose = new Pose2d(-26, -65, Math.toRadians(90));
-            Pose2d placeReady = new Pose2d(-24, -9, Math.toRadians(90));
-            Pose2d pickupPos = new Pose2d(-54,-10,Math.toRadians(180));
 
             drive.setPoseEstimate(startPose);
 
 
             TrajectorySequence gotos = drive.trajectorySequenceBuilder(startPose)
-                    .setTangent(Math.toRadians(20))
-                    .splineToConstantHeading(new Vector2d(-24,-9), Math.toRadians(150))
+                    .setTangent(Math.toRadians(gotosTan1))
+                    .splineToConstantHeading(placeReadyV, Math.toRadians(gotosTan2))
                     .build();
 
             TrajectorySequence pickup = drive.trajectorySequenceBuilder(placeReady)
-                    .setTangent(Math.toRadians(200))
-                    .splineToLinearHeading(pickupPos,Math.toRadians(180))
+                    .setTangent(Math.toRadians(pickupTan1))
+                    .splineToLinearHeading(pickupPos,Math.toRadians(pickupTan2))
                     .build();
 
             TrajectorySequence backto = drive.trajectorySequenceBuilder(pickupPos)
-                    .setTangent(Math.toRadians(0))
-                    .splineToLinearHeading(placeReady,Math.toRadians(0))
+                    .setTangent(Math.toRadians(backtoTan1))
+                    .splineToLinearHeading(placeReady,Math.toRadians(backtoTan2))
                     .build();
 
 
@@ -164,14 +192,14 @@ public class A1SplineLeft extends LinearOpMode {
             int conestack = 5;
             drive.claw(true);
             drive.liftOp(200);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(gotos);
             drive.claw(false);
             drive.liftOp(450);
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
@@ -179,7 +207,7 @@ public class A1SplineLeft extends LinearOpMode {
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
@@ -187,7 +215,7 @@ public class A1SplineLeft extends LinearOpMode {
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
@@ -195,7 +223,7 @@ public class A1SplineLeft extends LinearOpMode {
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
@@ -203,7 +231,7 @@ public class A1SplineLeft extends LinearOpMode {
             conestack--;
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
-            drive.liftOp(3000);
+            drive.liftOp(fullUp);
             drive.followTrajectorySequence(backto);
 
 

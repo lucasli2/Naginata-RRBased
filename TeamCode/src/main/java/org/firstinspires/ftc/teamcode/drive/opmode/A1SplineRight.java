@@ -169,41 +169,51 @@ public class A1SplineRight extends LinearOpMode {
             drive.claw(false);
             drive.liftOp(450-((5-conestack)*70));
             conestack--;
+            Thread.sleep(500);
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
             drive.liftOp(3000);
+            Thread.sleep(500);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
             drive.liftOp(450-((5-conestack)*70));
             conestack--;
+            Thread.sleep(500);
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
             drive.liftOp(3000);
+            Thread.sleep(500);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
             drive.liftOp(450-((5-conestack)*70));
             conestack--;
+            Thread.sleep(500);
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
             drive.liftOp(3000);
+            Thread.sleep(500);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
             drive.liftOp(450-((5-conestack)*70));
             conestack--;
+            Thread.sleep(500);
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
             drive.liftOp(3000);
+            Thread.sleep(500);
             drive.followTrajectorySequence(backto);
 
             drive.claw(false);
             drive.liftOp(450-((5-conestack)*70));
             conestack--;
+            Thread.sleep(500);
             drive.followTrajectorySequence(pickup);
             drive.claw(true);
             drive.liftOp(3000);
+            Thread.sleep(500);
             drive.followTrajectorySequence(backto);
 
 
