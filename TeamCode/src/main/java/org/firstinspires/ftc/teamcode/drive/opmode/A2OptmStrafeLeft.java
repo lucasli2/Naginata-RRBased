@@ -19,22 +19,20 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-//Statys: Fri Jan 20 18:50      Ready for Preliminary Testing. Will Await further results.
-
-
+//Status Friday Jan 20 18:50        Revision by deleting excessive forwards trajectories.
+// Status 18:54                     Ready for preliminary testing. Further opti
 @Config
 @Autonomous(group = "drive")
-public class A2StrafeRight extends LinearOpMode {
-    public static double strafeOne = 14;
-    public static double forwardToPos = 64;
+public class A2OptmStrafeLeft extends LinearOpMode {
+    public static double strafeOne = 12;
+    public static double forwardToPos = 63;
     public static double toDrop = 3;
     public static double strafetoJunctLock = 9;
-    public static double toJunctDist = 49;
+    public static double toJunctDist = 47;
     public static int toTop =  3200;
     public static int toFifth=  425;
     public static int toFourth=  365;
     public static int threadSleep = 200;
-    public static int dropRad = 270;
     
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -115,28 +113,19 @@ public class A2StrafeRight extends LinearOpMode {
 
 
         //Below is the Trajectory initialization for the drive code.
-        Pose2d startPose = new Pose2d(72, 36, Math.toRadians(180));
+        Pose2d startPose = new Pose2d(72, -36, Math.toRadians(180));
         drive.setPoseEstimate(startPose);
 
         //Trajectory traj1 = drive.trajectoryBuilder(startPose).forward(6).build();
         Trajectory traj2 = drive.trajectoryBuilder(startPose)
-                .strafeLeft(strafeOne)
+                .strafeRight(strafeOne)
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
                 .forward(forwardToPos)
                 .build();
 
-        //drives to place location & has lift going up
-        Trajectory dropPosition = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(dropRad))),false) //Need to fix this
-                .forward(toDrop)
-                .build();
-        //places here lift open
-        Trajectory backfromDrop = drive.trajectoryBuilder(dropPosition.end())
-                .back(toDrop)
-                .build();
-        //lift down
-        Trajectory strafeLeft = drive.trajectoryBuilder(backfromDrop.end())
-                .strafeRight(strafetoJunctLock)
+        Trajectory strafeLeft = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(90))))
+                .strafeLeft(strafetoJunctLock)
                 .build();
         Trajectory toJunct = drive.trajectoryBuilder(strafeLeft.end())
                 .forward(toJunctDist)
@@ -164,15 +153,12 @@ public class A2StrafeRight extends LinearOpMode {
             drive.liftOp(toTop); //lift going up here
             drive.followTrajectory(traj3);
 
-            drive.turn(Math.toRadians(dropRad));
-
-            drive.followTrajectory(dropPosition);
+            drive.turn(Math.toRadians(90));
 
             drive.liftOp(toTop);
             drive.claw(false); //drops
             drive.liftOp(toTop);
 
-            drive.followTrajectory(backfromDrop); //backs out
             //drive.claw(false);
             drive.followTrajectory(strafeLeft);
             drive.liftOp(toFifth); //needs tuning towards the first cone
@@ -183,13 +169,10 @@ public class A2StrafeRight extends LinearOpMode {
             Thread.sleep(threadSleep);
             drive.followTrajectory(toLoad);
             drive.followTrajectory(strafeRight);
-            drive.followTrajectory(dropPosition);
             drive.claw(false);
             drive.liftOp(toTop);
-            drive.followTrajectory(backfromDrop);
 
             //2ndcycl
-            drive.followTrajectory(backfromDrop); //backs out
             //drive.claw(false);
             drive.followTrajectory(strafeLeft);
             drive.liftOp(toFourth); //needs tuning towards the first cone
@@ -268,12 +251,12 @@ public class A2StrafeRight extends LinearOpMode {
             if (det==0){
                 telemetry.addData("Gonna go to 1 bc I didn't see",det);
                 //go to 3 in place for tall
-                drive.followTrajectory(to1);
+                drive.followTrajectory(to3);
                 drive.liftOp(0);
             }
             else if (det==1){
                 telemetry.addData("One",det);
-                drive.followTrajectory(to3);
+                drive.followTrajectory(to1);
                 drive.liftOp(0);
 
             }else if (det==2){
@@ -284,17 +267,14 @@ public class A2StrafeRight extends LinearOpMode {
 
 
             }else if (det==3){
-                drive.followTrajectory(to1);
+                drive.followTrajectory(to3);
                 drive.liftOp(0);
 
 
             }
             //drive.liftOp(threadSleep0);
 
-            telemetry.addData("Lift Enc: ",drive.lift.getCurrentPosition());
-
-            telemetry.update();
-
+            sleep(2000);
 
         }
 

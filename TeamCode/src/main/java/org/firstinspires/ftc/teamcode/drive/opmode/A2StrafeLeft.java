@@ -16,12 +16,14 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
+//Status Friday Jan 20 18:50        Ready for Comp. Go Team.
+                                // Will revise a bit in actuality.
 
 @Config
 @Autonomous(group = "drive")
 public class A2StrafeLeft extends LinearOpMode {
-    public static double strafeOne = 14;
-    public static double forwardToPos = 64;
+    public static double strafeOne = 13;
+    public static double forwardToPos = 62.5;
     public static double toDrop = 3;
     public static double strafetoJunctLock = 9;
     public static double toJunctDist = 49;
@@ -84,6 +86,7 @@ public class A2StrafeLeft extends LinearOpMode {
                 }
                 if (tagFound) {
                     telemetry.addLine("Tag of interest is in sight!");
+                    telemetry.addData("tag id: ",det);
                 } else {
                     telemetry.addLine("Don't see tag of interest :(");
 
@@ -284,9 +287,7 @@ public class A2StrafeLeft extends LinearOpMode {
             }
             //drive.liftOp(threadSleep0);
 
-            telemetry.addData("Lift Enc: ",drive.lift.getCurrentPosition());
-
-            telemetry.update();
+            sleep(2000);
 
 
         }
