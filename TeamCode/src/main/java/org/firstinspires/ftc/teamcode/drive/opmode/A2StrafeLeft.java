@@ -22,12 +22,12 @@ import java.util.ArrayList;
 @Config
 @Autonomous(group = "drive")
 public class A2StrafeLeft extends LinearOpMode {
-    public static double strafeOne = 13;
-    public static double forwardToPos = 62.5;
-    public static double toDrop = 3;
-    public static double strafetoJunctLock = 9;
+    public static double strafeOne = 14;
+    public static double forwardToPos = 63;
+    public static double toDrop = 4;
+    public static double strafetoJunctLock = 8;
     public static double toJunctDist = 49;
-    public static int toTop =  3200;
+    public static int toTop =  3050;
     public static int toFifth=  425;
     public static int toFourth=  365;
     public static int threadSleep = 200;
@@ -132,7 +132,7 @@ public class A2StrafeLeft extends LinearOpMode {
                 .build();
         //lift down
         Trajectory strafeLeft = drive.trajectoryBuilder(backfromDrop.end())
-                .strafeLeft(strafetoJunctLock)
+                .strafeLeft(strafetoJunctLock+1)
                 .build();
         Trajectory toJunct = drive.trajectoryBuilder(strafeLeft.end())
                 .forward(toJunctDist)
@@ -144,7 +144,7 @@ public class A2StrafeLeft extends LinearOpMode {
                 .back(toJunctDist-18)
                 .build();
         Trajectory strafeRight = drive.trajectoryBuilder(toLoad.end())
-                .strafeRight(strafetoJunctLock)
+                .strafeRight(strafetoJunctLock+1)
                 .build();
         Trajectory to1 = drive.trajectoryBuilder(toJunct.end())
                 .back(6).build();
@@ -164,9 +164,7 @@ public class A2StrafeLeft extends LinearOpMode {
 
             drive.followTrajectory(dropPosition);
 
-            drive.liftOp(toTop);
             drive.claw(false); //drops
-            drive.liftOp(toTop);
 
             drive.followTrajectory(backfromDrop); //backs out
             //drive.claw(false);
@@ -181,7 +179,7 @@ public class A2StrafeLeft extends LinearOpMode {
             drive.followTrajectory(strafeRight);
             drive.followTrajectory(dropPosition);
             drive.claw(false);
-            drive.liftOp(toTop);
+
             drive.followTrajectory(backfromDrop);
 
             //2ndcycl
